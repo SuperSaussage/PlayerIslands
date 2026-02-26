@@ -50,7 +50,7 @@ public class InventoryManager implements Listener {
         meta.setDisplayName(Colors.conv(config.getString("backButton.name")));
         meta.setLore(Colors.conv(config.getStringList("backButton.lore")));
         if (config.getBoolean("backButton.glow")) {
-            meta.addEnchant(Enchantment.WATER_WORKER, 1, true);
+            meta.addEnchant(Enchantment.AQUA_AFFINITY, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         backButton.setItemMeta(meta);
