@@ -25,7 +25,7 @@ public class InventoryItem {
         meta.setDisplayName(Colors.conv(config.getString(prefix + ".name")));
         meta.setLore(Colors.conv(config.getStringList(prefix + ".lore")));
         if (config.getBoolean(prefix + ".glow")) {
-            meta.addEnchant(Enchantment.WATER_WORKER, 1, true);
+            meta.addEnchant(Enchantment.AQUA_AFFINITY, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         itemStack.setItemMeta(meta);
@@ -39,11 +39,6 @@ public class InventoryItem {
         return slot;
     }
 
-    /**
-     * Creates a new entry in the config file for this prefix with default values
-     * @param config The configuration file
-     * @param prefix The prefix in the config file
-     */
     public static void addDefaults(FileConfiguration config, String prefix) {
         config.addDefault(prefix + ".slot", -1);
         config.addDefault(prefix + ".material", "DIRT");
@@ -52,16 +47,6 @@ public class InventoryItem {
         config.addDefault(prefix + ".glow", false);
     }
 
-    /**
-     * Creates a new entry in the config file for this prefix with specified values
-     * @param config The configuration file
-     * @param prefix The prefix in the config file
-     * @param slot The slot
-     * @param material The material
-     * @param name The name
-     * @param lore The lore
-     * @param glow If to add enchant glint
-     */
     public static void addDefaults(FileConfiguration config, String prefix, int slot, Material material, String name, List<String> lore, boolean glow) {
         config.addDefault(prefix + ".slot", slot);
         config.addDefault(prefix + ".material", material.toString().toUpperCase());
