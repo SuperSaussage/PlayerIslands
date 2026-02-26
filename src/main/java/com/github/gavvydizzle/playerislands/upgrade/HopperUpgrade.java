@@ -4,8 +4,8 @@ public class HopperUpgrade extends Upgrade {
 
     private final int maxHoppers;
 
-    public HopperUpgrade(String permission, int price, int maxHoppers) {
-        super(permission, price);
+    public HopperUpgrade(long price, int level, String permission, int maxHoppers) {
+        super(price, level, permission);
         this.maxHoppers = maxHoppers;
     }
 
