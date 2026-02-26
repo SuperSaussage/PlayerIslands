@@ -10,18 +10,18 @@ public class Upgrade {
     private final int upgradeLevel;
     private final String permission;
 
-    public Upgrade (long price, int level, String permission) {
+    public Upgrade(long price, int level, String permission) {
         this.price = Math.max(0, price);
         upgradeLevel = level;
         this.permission = permission;
     }
 
     public boolean cannotAffordUpgrade(Player player) {
-        return !PlayerIslands.getEconomy().has(player, price);
+        return !PlayerIslands.hasTokens(player, price);
     }
 
     public void purchaseUpgrade(Player player) {
-        PlayerIslands.getEconomy().withdrawPlayer(player, price);
+        if (!PlayerIslands.withdrawTokens(player, price)) return;
         player.sendMessage(Messages.successfulPurchase.replace("{price}", "" + price));
     }
 
@@ -55,5 +55,4 @@ public class Upgrade {
     public long getPrice() {
         return price;
     }
-
 }
