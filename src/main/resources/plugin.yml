@@ -2,8 +2,8 @@ name: PlayerIslands
 version: '${project.version}'
 main: com.github.gavvydizzle.playerislands.PlayerIslands
 api-version: 1.18
-softdepend: [PlaceholderAPI]
-depend: [ServerUtils, Vault, WorldEdit, WorldGuard]
+softdepend: [PlaceholderAPI, Vault]
+depend: [ServerUtils, CoinsEngine, WorldEdit, WorldGuard]
 author: GavvyDizzle
 description: Lightweight, highly customizable island/cell/plots plugin
 commands:
