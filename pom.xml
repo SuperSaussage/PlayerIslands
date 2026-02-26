@@ -19,6 +19,7 @@
         <worldguard.version>7.0.9</worldguard.version>
         <placeholderapi.version>2.11.6</placeholderapi.version>
         <vaultapi.version>1.7.1</vaultapi.version>
+        <coinsengine.version>2.6.0</coinsengine.version>
         <fastutil.version>8.5.13</fastutil.version>
     </properties>
 
@@ -67,13 +68,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>${vaultapi.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
             <version>${fastutil.version}</version>
@@ -87,6 +81,24 @@
             <systemPath>${project.basedir}/lib/ServerUtils.jar</systemPath>
         </dependency>
 
+        <!-- Vault dependency provided at runtime, but also compile against local jar to satisfy Maven -->
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>${vaultapi.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/VaultAPI.jar</systemPath>
+        </dependency>
+
+        <!-- CoinsEngine API (required for your token economy integration later) -->
+        <dependency>
+            <groupId>su.nightexpress.coinsengine</groupId>
+            <artifactId>CoinsEngine</artifactId>
+            <version>${coinsengine.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/CoinsEngine.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -96,7 +108,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>${maven.compiler.release}</release>
+                    <release>${maven.compiler.release}</maven.compiler.release>
                 </configuration>
             </plugin>
         </plugins>
