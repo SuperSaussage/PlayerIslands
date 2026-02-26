@@ -1,29 +1,36 @@
 package com.github.gavvydizzle.playerislands;
 
-import com.github.gavvydizzle.playerislands.commands.IslandSelectionManager;
-import com.github.gavvydizzle.playerislands.gui.*;
-import com.github.gavvydizzle.playerislands.island.IslandManager;
 import com.github.gavvydizzle.playerislands.commands.AdminCommandManager;
+import com.github.gavvydizzle.playerislands.commands.IslandSelectionManager;
 import com.github.gavvydizzle.playerislands.commands.PlayerCommandManager;
+import com.github.gavvydizzle.playerislands.gui.InventoryManager;
+import com.github.gavvydizzle.playerislands.gui.InventoryUI;
+import com.github.gavvydizzle.playerislands.gui.IslandStatus;
+import com.github.gavvydizzle.playerislands.gui.PlayerMenu;
+import com.github.gavvydizzle.playerislands.gui.UpgradeUI;
+import com.github.gavvydizzle.playerislands.island.IslandManager;
 import com.github.gavvydizzle.playerislands.papi.IslandExpansion;
 import com.github.gavvydizzle.playerislands.storage.Database;
 import com.github.gavvydizzle.playerislands.storage.SQLite;
 import com.github.gavvydizzle.playerislands.upgrade.UpgradeManager;
 import com.github.gavvydizzle.playerislands.utils.Messages;
 import com.github.gavvydizzle.playerislands.utils.Sounds;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import su.nightexpress.coinsengine.api.CoinsEngineAPI;
+import su.nightexpress.coinsengine.api.currency.Currency;
 
 import java.io.File;
 import java.util.Objects;
 
 public final class PlayerIslands extends JavaPlugin {
 
+    private static final String TOKEN_CURRENCY_ID = "tokens";
+
     private static PlayerIslands instance;
-    private static Economy economy;
+    private static Currency tokenCurrency;
+
     private Database database;
     private IslandManager islandManager;
     private UpgradeManager upgradeManager;
@@ -34,8 +41,8 @@ public final class PlayerIslands extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (!setupEconomy() ) {
-            Bukkit.getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+        if (!setupEconomy()) {
+            Bukkit.getLogger().severe(String.format("[%s] - Disabled because CoinsEngine or currency '%s' was not found!", getDescription().getName(), TOKEN_CURRENCY_ID));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -84,15 +91,12 @@ public final class PlayerIslands extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (getServer().getPluginManager().getPlugin("CoinsEngine") == null) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        economy = rsp.getProvider();
-        return true;
+
+        tokenCurrency = CoinsEngineAPI.getCurrency(TOKEN_CURRENCY_ID);
+        return tokenCurrency != null;
     }
 
     private void createSchematicFolder() {
@@ -119,8 +123,19 @@ public final class PlayerIslands extends JavaPlugin {
         return instance;
     }
 
-    public static Economy getEconomy() {
-        return economy;
+    public static Currency getTokenCurrency() {
+        return tokenCurrency;
+    }
+
+    public static boolean hasTokens(Player player, double amount) {
+        if (tokenCurrency == null) return false;
+        return CoinsEngineAPI.getBalance(player, tokenCurrency) >= amount;
+    }
+
+    public static boolean withdrawTokens(Player player, double amount) {
+        if (!hasTokens(player, amount)) return false;
+        CoinsEngineAPI.removeBalance(player, tokenCurrency, amount);
+        return true;
     }
 
     public Database getDatabase() {
